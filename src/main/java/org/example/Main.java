@@ -1,9 +1,23 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello and welcome!");
+        try {
+            // Создаем экземпляр API телеграм ботов
+            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+
+            // Регистрируем нашего бота
+            botsApi.registerBot(new TelegramBot());
+
+            System.out.println("Бот успешно запущен!");
+            System.out.println("Имя бота: " + Token.BOT_USERNAME);
+
+        } catch (TelegramApiException e) {
+            System.err.println("[ERR]: " + e.getMessage());
+        }
     }
 }
