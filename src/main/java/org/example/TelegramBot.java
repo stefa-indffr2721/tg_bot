@@ -10,6 +10,7 @@ import java.util.*;
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final QuestionRepository questionRepository;
+
     private final Map<Long, GameState> userGameStates;
 
     public TelegramBot() {
@@ -19,7 +20,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        // Проверяем, есть ли сообщение и текст в нем
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
