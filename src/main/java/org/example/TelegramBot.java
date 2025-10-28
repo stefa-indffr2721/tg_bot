@@ -58,7 +58,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         GameState gameState = userGameStates.get(chatId);
 
         if (gameState.currentQuestionIndex < questionRepository.getTotalQuestions()) {
-            QuestionRepository.QuizQuestion currentQuestion =
+            QuizQuestion currentQuestion =
                     questionRepository.getAllQuestions().get(gameState.currentQuestionIndex);
 
             String questionText = "Вопрос " + (gameState.currentQuestionIndex + 1) + "/5:\n" +
@@ -77,7 +77,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     // Добавлено: Обработка ответа
     private void processAnswer(long chatId, int userAnswer) {
         GameState gameState = userGameStates.get(chatId);
-        QuestionRepository.QuizQuestion currentQuestion =
+        QuizQuestion currentQuestion =
                 questionRepository.getAllQuestions().get(gameState.currentQuestionIndex);
 
         boolean isCorrect = (userAnswer - 1) == currentQuestion.getCorrectAnswerIndex();
