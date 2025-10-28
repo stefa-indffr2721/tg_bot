@@ -25,10 +25,18 @@ public class TelegramBot extends TelegramLongPollingBot {
             long chatId = update.getMessage().getChatId();
 
             if (messageText.equals("/play")) {
-                startGame(chatId);
-            } else if (userGameStates.containsKey(chatId) &&
-                    (messageText.equals("1") || messageText.equals("2") || messageText.equals("3"))) {
-                processAnswer(chatId, Integer.parseInt(messageText));
+                showCategorySelection(chatId);
+            } else if (userGameStates.containsKey(chatId)) {
+                GameState gameState = userGameStates.get(chatId);
+
+                if (gameState.waitingForCategory) {
+                    processCategorySelection(chatId, messageText);
+                } else if (messageText.equals("1") || messageText.equals("2") || messageText.equals("3")) {
+                    //по хорошему надо переписать так, чтоб работало с любым количеством ответов
+                    processAnswer(chatId, Integer.parseInt(messageText));
+                } else {
+                    sendMessage(chatId, "Для ответа введите 1, 2 или 3");
+                }
             } else {
                 switch (messageText) {
                     case "/start":
@@ -38,30 +46,64 @@ public class TelegramBot extends TelegramLongPollingBot {
                         sendHelpMessage(chatId);
                         break;
                     default:
-                        if (userGameStates.containsKey(chatId)) {
-                            sendMessage(chatId, "Для ответа введите 1, 2 или 3");
-                        } else {
-                            sendUnknownCommandMessage(chatId);
-                        }
+                        sendUnknownCommandMessage(chatId);
                         break;
                 }
             }
         }
     }
 
+    private void showCategorySelection(long chatId) {
+        List<String> categories = questionRepository.getAvailableCategories();
+        StringBuilder message = new StringBuilder("🎯 Выберите категорию:\n\n");
+
+        for (int i = 0; i < categories.size(); i++) {
+            message.append(i + 1).append(". ").append(categories.get(i)).append("\n");
+        }
+
+        message.append("\nВведите номер категории (1-5):");
+
+        GameState gameState = new GameState();
+        gameState.waitingForCategory = true;
+        userGameStates.put(chatId, gameState);
+
+        sendMessage(chatId, message.toString());
+    }
+
+    private void processCategorySelection(long chatId, String categoryInput) {
+        if (categoryInput.equals("1") || categoryInput.equals("2") || categoryInput.equals("3") ||
+                categoryInput.equals("4") || categoryInput.equals("5")) {
+            //по хорошему надо переписать так, чтоб работало с любым количеством категорий
+
+            int categoryIndex = Integer.parseInt(categoryInput) - 1;
+            List<String> categories = questionRepository.getAvailableCategories();
+            String selectedCategory = categories.get(categoryIndex);
+            GameState gameState = userGameStates.get(chatId);
+
+            gameState.waitingForCategory = false;
+            gameState.selectedCategory = selectedCategory;
+            gameState.questions = questionRepository.getQuestionsByCategory(selectedCategory);
+
+            sendMessage(chatId, "✅ Вы выбрали: " + selectedCategory + "\nНачинаем викторину!");
+            sendNextQuestion(chatId);
+
+        } else {
+            sendMessage(chatId, "❌ Пожалуйста, введите число от 1 до 5");
+        }
+    }
+
     private void startGame(long chatId) {
-        userGameStates.put(chatId, new GameState());
         sendNextQuestion(chatId);
     }
 
     private void sendNextQuestion(long chatId) {
         GameState gameState = userGameStates.get(chatId);
 
-        if (gameState.currentQuestionIndex < questionRepository.getTotalQuestions()) {
-            QuizQuestion currentQuestion =
-                    questionRepository.getAllQuestions().get(gameState.currentQuestionIndex);
+        if (gameState.currentQuestionIndex < gameState.questions.size()) {
+            QuizQuestion currentQuestion = gameState.questions.get(gameState.currentQuestionIndex);
 
-            String questionText = "Вопрос " + (gameState.currentQuestionIndex + 1) + "/5:\n" +
+            String questionText = "📝 Категория: " + gameState.selectedCategory + "\n" +
+                    "Вопрос " + (gameState.currentQuestionIndex + 1) + "/5:\n" +
                     currentQuestion.getQuestion() + "\n\n" +
                     "1. " + currentQuestion.getOptions().get(0) + "\n" +
                     "2. " + currentQuestion.getOptions().get(1) + "\n" +
@@ -74,11 +116,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    // Добавлено: Обработка ответа
     private void processAnswer(long chatId, int userAnswer) {
         GameState gameState = userGameStates.get(chatId);
-        QuizQuestion currentQuestion =
-                questionRepository.getAllQuestions().get(gameState.currentQuestionIndex);
+        QuizQuestion currentQuestion = gameState.questions.get(gameState.currentQuestionIndex);
 
         boolean isCorrect = (userAnswer - 1) == currentQuestion.getCorrectAnswerIndex();
 
@@ -92,7 +132,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         gameState.currentQuestionIndex++;
 
-        if (gameState.currentQuestionIndex < questionRepository.getTotalQuestions()) {
+        if (gameState.currentQuestionIndex < gameState.questions.size()) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -106,8 +146,12 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void finishGame(long chatId) {
         GameState gameState = userGameStates.get(chatId);
-        String result = "🎉 Викторина завершена! :)\n\n" +
-                "Ваш результат: " + gameState.correctAnswers + "/5 правильных ответов!";
+        String result = "🎉 Викторина завершена!\n" +
+                "Ваш результат: " + gameState.correctAnswers + "/5 правильных ответов!\n\n" +
+                "Хотите сыграть ещё раз?\n" +
+                "/play\n" +
+                "Или используйте команду /help чтобы узнать что я умею.";
+
         sendMessage(chatId, result);
         userGameStates.remove(chatId);
     }
@@ -131,7 +175,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 
                 /start - начать работу с ботом
                 /help - показать эту справку
-                /play - начать викторину (5 вопросов)
+                /play - выбрать категорию и начать викторину (5 вопросов)
                 
                 Во время игры выбирайте ответы 1, 2 или 3.""";
 
@@ -167,9 +211,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         return Token.BOT_TOKEN;
     }
 
-    // Добавлено: Внутренний класс для состояния игры
     private static class GameState {
         int currentQuestionIndex = 0;
         int correctAnswers = 0;
+        boolean waitingForCategory = true;
+        String selectedCategory;
+        List<QuizQuestion> questions;
     }
 }
