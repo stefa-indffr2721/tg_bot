@@ -31,11 +31,15 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 if (gameState.waitingForCategory) {
                     processCategorySelection(chatId, messageText);
-                } else if (messageText.equals("1") || messageText.equals("2") || messageText.equals("3")) {
-                    //по хорошему надо переписать так, чтоб работало с любым количеством ответов
-                    processAnswer(chatId, Integer.parseInt(messageText));
                 } else {
-                    sendMessage(chatId, "Для ответа введите 1, 2 или 3");
+                    QuizQuestion currentQuestion = gameState.questions.get(gameState.currentQuestionIndex);
+                    int maxAnswers = currentQuestion.getOptions().size();
+                    int answerIndex = isValidNumberInput(messageText, 1, maxAnswers);
+                    if (answerIndex != -1) {
+                        processAnswer(chatId, answerIndex + 1);
+                    } else {
+                        sendMessage(chatId, "Для ответа введите 1, 2 или 3");
+                    }
                 }
             } else {
                 switch (messageText) {
@@ -71,12 +75,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void processCategorySelection(long chatId, String categoryInput) {
-        if (categoryInput.equals("1") || categoryInput.equals("2") || categoryInput.equals("3") ||
-                categoryInput.equals("4") || categoryInput.equals("5")) {
-            //по хорошему надо переписать так, чтоб работало с любым количеством категорий
+        List<String> categories = questionRepository.getAvailableCategories();
+        int categoryIndex = isValidNumberInput(categoryInput, 1, categories.size());
 
-            int categoryIndex = Integer.parseInt(categoryInput) - 1;
-            List<String> categories = questionRepository.getAvailableCategories();
+        if (categoryIndex != -1) {
             String selectedCategory = categories.get(categoryIndex);
             GameState gameState = userGameStates.get(chatId);
 
@@ -84,12 +86,19 @@ public class TelegramBot extends TelegramLongPollingBot {
             gameState.selectedCategory = selectedCategory;
             gameState.questions = questionRepository.getQuestionsByCategory(selectedCategory);
 
-            sendMessage(chatId, "✅ Вы выбрали: " + selectedCategory + "\nНачинаем викторину!");
+            sendMessage(chatId, "Вы выбрали: " + selectedCategory + "\nНачинаем викторину!");
             sendNextQuestion(chatId);
-
         } else {
-            sendMessage(chatId, "❌ Пожалуйста, введите число от 1 до 5");
+            sendMessage(chatId, "Пожалуйста, введите число от 1 до " + categories.size());
         }
+    }
+
+    private int isValidNumberInput(String input, int min, int max) {
+        int value = Integer.parseInt(input);
+        if (value >= min && value <= max) {
+            return value - 1;
+        }
+        return -1;
     }
 
     private void startGame(long chatId) {
