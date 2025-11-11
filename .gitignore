@@ -1,6 +1,9 @@
 .idea
 .out/
 .target/
+idea
+out/
+target/
 Token.java
 org/example/Token.java
 /src/main/java/org/example/Token.java

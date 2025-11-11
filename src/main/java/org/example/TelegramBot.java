@@ -1,8 +1,11 @@
 package org.example;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
@@ -10,7 +13,6 @@ import java.util.*;
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final QuestionRepository questionRepository;
-
     private final Map<Long, GameState> userGameStates;
 
     public TelegramBot() {
@@ -24,84 +26,83 @@ public class TelegramBot extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
 
-            if (messageText.equals("/play")) {
-                showCategorySelection(chatId);
-            } else if (userGameStates.containsKey(chatId)) {
-                GameState gameState = userGameStates.get(chatId);
-
-                if (gameState.waitingForCategory) {
-                    processCategorySelection(chatId, messageText);
-                } else {
-                    QuizQuestion currentQuestion = gameState.questions.get(gameState.currentQuestionIndex);
-                    int maxAnswers = currentQuestion.getOptions().size();
-                    int answerIndex = isValidNumberInput(messageText, 1, maxAnswers);
-                    if (answerIndex != -1) {
-                        processAnswer(chatId, answerIndex + 1);
-                    } else {
-                        sendMessage(chatId, "Для ответа введите 1, 2 или 3");
-                    }
-                }
-            } else {
-                switch (messageText) {
-                    case "/start":
-                        sendStartMessage(chatId);
-                        break;
-                    case "/help":
-                        sendHelpMessage(chatId);
-                        break;
-                    default:
-                        sendUnknownCommandMessage(chatId);
-                        break;
-                }
+            switch (messageText) {
+                case "/start":
+                    sendStartMessage(chatId);
+                    break;
+                case "/play":
+                    showCategorySelection(chatId);
+                    break;
+                case "/help":
+                    sendHelpMessage(chatId);
+                    break;
+                default:
+                    sendUnknownCommandMessage(chatId);
+                    break;
             }
+        } else if (update.hasCallbackQuery()) {
+            String callbackData = update.getCallbackQuery().getData();
+            long chatId = update.getCallbackQuery().getMessage().getChatId();
+            String callbackQueryId = update.getCallbackQuery().getId();
+
+            answerCallbackQuery(callbackQueryId);
+
+            if (callbackData.startsWith("category_")) {
+                String categoryName = callbackData.substring(9);
+                processCategorySelection(chatId, categoryName);
+            } else if (callbackData.startsWith("answer_")) {
+                int answerIndex = Integer.parseInt(callbackData.substring(7));
+                processAnswer(chatId, answerIndex);
+            }
+        }
+    }
+
+    private void answerCallbackQuery(String callbackQueryId) {
+        AnswerCallbackQuery answer = new AnswerCallbackQuery();
+        answer.setCallbackQueryId(callbackQueryId);
+        try {
+            execute(answer);
+        } catch (TelegramApiException e) {
+            System.err.println("[ERR]: " + e.getMessage());
         }
     }
 
     private void showCategorySelection(long chatId) {
         List<String> categories = questionRepository.getAvailableCategories();
-        StringBuilder message = new StringBuilder("🎯 Выберите категорию:\n\n");
 
-        for (int i = 0; i < categories.size(); i++) {
-            message.append(i + 1).append(". ").append(categories.get(i)).append("\n");
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        for (String category : categories) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(category);
+            button.setCallbackData("category_" + category);
+            row.add(button);
+            rows.add(row);
         }
 
-        message.append("\nВведите номер категории (1-5):");
+        keyboardMarkup.setKeyboard(rows);
 
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText("🎯 Выберите категорию:");
+        message.setReplyMarkup(keyboardMarkup);
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            System.err.println("[ERR]: " + e.getMessage());
+        }
+    }
+
+    private void processCategorySelection(long chatId, String categoryName) {
         GameState gameState = new GameState();
-        gameState.waitingForCategory = true;
+        gameState.selectedCategory = categoryName;
+        gameState.questions = questionRepository.getQuestionsByCategory(categoryName);
         userGameStates.put(chatId, gameState);
 
-        sendMessage(chatId, message.toString());
-    }
-
-    private void processCategorySelection(long chatId, String categoryInput) {
-        List<String> categories = questionRepository.getAvailableCategories();
-        int categoryIndex = isValidNumberInput(categoryInput, 1, categories.size());
-
-        if (categoryIndex != -1) {
-            String selectedCategory = categories.get(categoryIndex);
-            GameState gameState = userGameStates.get(chatId);
-
-            gameState.waitingForCategory = false;
-            gameState.selectedCategory = selectedCategory;
-            gameState.questions = questionRepository.getQuestionsByCategory(selectedCategory);
-
-            sendMessage(chatId, "Вы выбрали: " + selectedCategory + "\nНачинаем викторину!");
-            sendNextQuestion(chatId);
-        } else {
-            sendMessage(chatId, "Пожалуйста, введите число от 1 до " + categories.size());
-        }
-    }
-
-    private int isValidNumberInput(String input, int min, int max) {
-        int value = Integer.parseInt(input);
-        if (value >= min && value <= max) {
-            return value - 1;
-        }
-        return -1;
-    }
-
-    private void startGame(long chatId) {
+        sendMessage(chatId, "✅ Вы выбрали: " + categoryName + "\nНачинаем викторину!");
         sendNextQuestion(chatId);
     }
 
@@ -111,25 +112,45 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (gameState.currentQuestionIndex < gameState.questions.size()) {
             QuizQuestion currentQuestion = gameState.questions.get(gameState.currentQuestionIndex);
 
-            String questionText = "📝 Категория: " + gameState.selectedCategory + "\n" +
-                    "Вопрос " + (gameState.currentQuestionIndex + 1) + "/5:\n" +
-                    currentQuestion.getQuestion() + "\n\n" +
-                    "1. " + currentQuestion.getOptions().get(0) + "\n" +
-                    "2. " + currentQuestion.getOptions().get(1) + "\n" +
-                    "3. " + currentQuestion.getOptions().get(2) + "\n\n" +
-                    "Выберите ответ (1, 2 или 3):";
+            InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+            List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
-            sendMessage(chatId, questionText);
+            List<String> options = currentQuestion.getOptions();
+            for (int i = 0; i < options.size(); i++) {
+                List<InlineKeyboardButton> row = new ArrayList<>();
+                InlineKeyboardButton button = new InlineKeyboardButton();
+                button.setText(options.get(i));
+                button.setCallbackData("answer_" + i);
+                row.add(button);
+                rows.add(row);
+            }
+
+            keyboardMarkup.setKeyboard(rows);
+
+            String questionText = "📝 Категория: " + gameState.selectedCategory + "\n" +
+                    "Вопрос " + (gameState.currentQuestionIndex + 1) + "/" + gameState.questions.size() + ":\n" +
+                    currentQuestion.getQuestion();
+
+            SendMessage message = new SendMessage();
+            message.setChatId(String.valueOf(chatId));
+            message.setText(questionText);
+            message.setReplyMarkup(keyboardMarkup);
+
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                System.err.println("[ERR]: " + e.getMessage());
+            }
         } else {
             finishGame(chatId);
         }
     }
 
-    private void processAnswer(long chatId, int userAnswer) {
+    private void processAnswer(long chatId, int answerIndex) {
         GameState gameState = userGameStates.get(chatId);
         QuizQuestion currentQuestion = gameState.questions.get(gameState.currentQuestionIndex);
 
-        boolean isCorrect = (userAnswer - 1) == currentQuestion.getCorrectAnswerIndex();
+        boolean isCorrect = answerIndex == currentQuestion.getCorrectAnswerIndex();
 
         if (isCorrect) {
             gameState.correctAnswers++;
@@ -141,22 +162,26 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         gameState.currentQuestionIndex++;
 
-        if (gameState.currentQuestionIndex < gameState.questions.size()) {
+        new Thread(() -> {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
+                return;
             }
-            sendNextQuestion(chatId);
-        } else {
-            finishGame(chatId);
-        }
+
+            if (gameState.currentQuestionIndex < gameState.questions.size()) {
+                sendNextQuestion(chatId);
+            } else {
+                finishGame(chatId);
+            }
+        }).start();
     }
 
     private void finishGame(long chatId) {
         GameState gameState = userGameStates.get(chatId);
         String result = "🎉 Викторина завершена!\n" +
-                "Ваш результат: " + gameState.correctAnswers + "/5 правильных ответов!\n\n" +
+                "Ваш результат: " + gameState.correctAnswers + "/" + gameState.questions.size() + " правильных ответов!\n\n" +
                 "Хотите сыграть ещё раз?\n" +
                 "/play\n" +
                 "Или используйте команду /help чтобы узнать что я умею.";
@@ -184,9 +209,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 
                 /start - начать работу с ботом
                 /help - показать эту справку
-                /play - выбрать категорию и начать викторину (5 вопросов)
+                /play - выбрать категорию и начать викторину
                 
-                Во время игры выбирайте ответы 1, 2 или 3.""";
+                Во время игры выбирайте ответы с помощью кнопок.""";
 
         sendMessage(chatId, response);
     }
@@ -223,7 +248,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private static class GameState {
         int currentQuestionIndex = 0;
         int correctAnswers = 0;
-        boolean waitingForCategory = true;
         String selectedCategory;
         List<QuizQuestion> questions;
     }
