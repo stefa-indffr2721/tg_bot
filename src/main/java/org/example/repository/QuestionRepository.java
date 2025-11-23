@@ -1,6 +1,7 @@
-package org.example;
+package org.example.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.model.QuizQuestion;
 import java.io.InputStream;
 import java.util.*;
 
