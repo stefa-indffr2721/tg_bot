@@ -5,7 +5,7 @@ idea
 out/
 target/
 Token.java
-org/example/Token.java
+org/example/config/Token.java
 /src/main/java/org/example/Token.java
 /target/classes/org/example/Main.class
 /target/classes/org/example/QuestionRepository$QuizQuestion.class
@@ -13,3 +13,4 @@ org/example/Token.java
 /target/classes/org/example/TelegramBot$GameState.class
 /target/classes/org/example/TelegramBot.class
 /target/classes/org/example/Token.class
+/target/

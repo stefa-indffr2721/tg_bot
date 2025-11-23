@@ -1,8 +1,7 @@
-package org.example;
+package org.example.model;
 
 import java.util.List;
 
-// Класс для хранения вопроса и вариантов ответов
 public class QuizQuestion {
     private final String question;
     private final List<String> options;
