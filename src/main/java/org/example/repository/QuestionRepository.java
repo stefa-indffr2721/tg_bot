@@ -30,7 +30,8 @@ public class QuestionRepository {
                     quizQuestions.add(new QuizQuestion(
                             jsonQuestion.question,
                             jsonQuestion.options,
-                            jsonQuestion.correctAnswerIndex
+                            jsonQuestion.correctAnswerIndex,
+                            jsonQuestion.image
                     ));
                 }
                 questionsByCategory.put(entry.getKey(), quizQuestions);
@@ -49,6 +50,7 @@ public class QuestionRepository {
         public String question;
         public List<String> options;
         public int correctAnswerIndex;
+        public String image;
     }
 
     public List<String> getAvailableCategories() {

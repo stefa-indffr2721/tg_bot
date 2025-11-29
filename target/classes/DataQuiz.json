@@ -4,134 +4,191 @@
       {
         "question": "Столица Франции?",
         "options": ["Лондон", "Париж", "Берлин"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Самая длинная река в мире?",
         "options": ["Амазонка", "Нил", "Янцзы"],
-        "correctAnswerIndex": 0
+        "correctAnswerIndex": 0,
+        "image": null
       },
       {
         "question": "Столица Японии?",
         "options": ["Пекин", "Сеул", "Токио"],
-        "correctAnswerIndex": 2
+        "correctAnswerIndex": 2,
+        "image": null
       },
       {
         "question": "Самая высокая гора в мире?",
         "options": ["Килиманджаро", "Эверест", "Монблан"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Сколько океанов на Земле?",
         "options": ["4", "5", "6"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       }
     ],
     "Наука": [
       {
         "question": "Сколько планет в Солнечной системе?",
         "options": ["8", "9", "10"],
-        "correctAnswerIndex": 0
+        "correctAnswerIndex": 0,
+        "image": null
       },
       {
         "question": "Химическая формула воды?",
         "options": ["CO2", "H2O", "O2"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Какая планета известна кольцами?",
         "options": ["Юпитер", "Сатурн", "Уран"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Сколько костей в теле взрослого человека?",
         "options": ["206", "210", "215"],
-        "correctAnswerIndex": 0
+        "correctAnswerIndex": 0,
+        "image": null
       },
       {
         "question": "Какой газ растения поглощают из атмосферы?",
         "options": ["Кислород", "Азот", "Углекислый газ"],
-        "correctAnswerIndex": 2
+        "correctAnswerIndex": 2,
+        "image": null
       }
     ],
     "Литература": [
       {
         "question": "Кто написал 'Войну и мир'?",
         "options": ["Достоевский", "Толстой", "Чехов"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Автор 'Гарри Поттера'?",
         "options": ["Дж. Р. Р. Толкин", "Дж. К. Роулинг", "К. С. Льюис"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Кто написал 'Преступление и наказание'?",
         "options": ["Толстой", "Достоевский", "Гоголь"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Автор 'Мастер и Маргарита'?",
         "options": ["Булгаков", "Пастернак", "Набоков"],
-        "correctAnswerIndex": 0
+        "correctAnswerIndex": 0,
+        "image": null
       },
       {
         "question": "Кто написал 'Евгений Онегин'?",
         "options": ["Лермонтов", "Пушкин", "Тургенев"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       }
     ],
     "Животные": [
       {
         "question": "Самое большое млекопитающее?",
         "options": ["Слон", "Синий кит", "Жираф"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Сколько жизней у кошки?",
         "options": ["7", "9", "6"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Какое животное самое быстрое на суше?",
         "options": ["Лев", "Гепард", "Антилопа"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Сколько глаз у паука?",
         "options": ["6", "8", "10"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Какое животное может поворачивать голову на 360 градусов?",
         "options": ["Филин", "Хамелеон", "Сова"],
-        "correctAnswerIndex": 0
+        "correctAnswerIndex": 0,
+        "image": null
       }
     ],
     "История": [
       {
         "question": "В каком году началась Вторая мировая война?",
         "options": ["1939", "1941", "1945"],
-        "correctAnswerIndex": 0
+        "correctAnswerIndex": 0,
+        "image": null
       },
       {
         "question": "Первый человек в космосе?",
         "options": ["Нил Армстронг", "Юрий Гагарин", "Алан Шепард"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Кто был первым президентом США?",
         "options": ["Томас Джефферсон", "Джордж Вашингтон", "Авраам Линкольн"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "В каком году пала Берлинская стена?",
         "options": ["1987", "1989", "1991"],
-        "correctAnswerIndex": 1
+        "correctAnswerIndex": 1,
+        "image": null
       },
       {
         "question": "Древнеримский гладиатор, возглавивший восстание?",
         "options": ["Юлий Цезарь", "Спартак", "Ганнибал"],
+        "correctAnswerIndex": 1,
+        "image": null
+      }
+    ],
+    "Породы кошек": [
+      {
+        "question": "Какая это порода кошки?",
+        "image": "cat1.jpg",
+        "options": ["Британская короткошёрстная", "Мейн-кун", "Сфинкс"],
+        "correctAnswerIndex": 0
+      },
+      {
+        "question": "Узнайте породу этой кошки",
+        "image": "cat2.jpg",
+        "options": ["Сиамская", "Персидская", "Бенгальская"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "question": "Как называется эта порода?",
+        "image": "cat3.jpg",
+        "options": ["Русская голубая", "Шотландская вислоухая", "Ориентальная"],
+        "correctAnswerIndex": 2
+      },
+      {
+        "question": "Определите породу кошки",
+        "image": "cat4.jpg",
+        "options": ["Норвежская лесная", "Сибирская", "Регдолл"],
+        "correctAnswerIndex": 0
+      },
+      {
+        "question": "Какая порода изображена на фото?",
+        "image": "cat5.jpg",
+        "options": ["Абиссинская", "Канадский сфинкс", "Бурманская"],
         "correctAnswerIndex": 1
       }
     ]
