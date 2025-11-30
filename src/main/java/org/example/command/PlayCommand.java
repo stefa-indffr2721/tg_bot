@@ -60,7 +60,36 @@ public class PlayCommand implements Command {
         List<QuizQuestion> questions = quizService.getQuestionsByCategory(categoryName);
         userSessionService.startNewGame(chatId, categoryName, questions);
 
-        bot.execute(createMessage(chatId, "✅ Вы выбрали: " + categoryName + "\nНачинаем викторину!"));
+        showStartConfirmation(chatId, categoryName, bot);
+    }
+
+    private void showStartConfirmation(long chatId, String categoryName, TelegramLongPollingBot bot) throws TelegramApiException {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        InlineKeyboardButton startButton = new InlineKeyboardButton();
+        startButton.setText("🚀 Начать игру!");
+        startButton.setCallbackData("start_game_" + categoryName);
+        row.add(startButton);
+        rows.add(row);
+
+        keyboardMarkup.setKeyboard(rows);
+
+        String messageText = "✅ Вы выбрали: " + categoryName + "\n\n" +
+                "⏰ Как только вы нажмете кнопку, запустится таймер.\n" +
+                "Вы хотите начать игру?";
+
+        SendMessage message = createMessage(chatId, messageText);
+        message.setReplyMarkup(keyboardMarkup);
+        bot.execute(message);
+    }
+
+    public void startGameWithTimer(long chatId, String categoryName, TelegramLongPollingBot bot) throws TelegramApiException {
+        GameState gameState = userSessionService.getGameState(chatId);
+        gameState.setStartTime(System.currentTimeMillis());
+
+        bot.execute(createMessage(chatId, "⏱ Таймер запущен! Начинаем викторину!"));
         sendNextQuestion(chatId, bot);
     }
 
@@ -101,8 +130,7 @@ public class PlayCommand implements Command {
         }
     }
 
-    private void sendPhotoQuestion(long chatId, String caption, String imageName,
-                                   InlineKeyboardMarkup keyboardMarkup, TelegramLongPollingBot bot)
+    private void sendPhotoQuestion(long chatId, String caption, String imageName, InlineKeyboardMarkup keyboardMarkup, TelegramLongPollingBot bot)
             throws TelegramApiException {
         try {
             String resourcesPath = "src/main/resources/";
@@ -118,7 +146,6 @@ public class PlayCommand implements Command {
             } else {
                 InputStream imageStream = getClass().getClassLoader().getResourceAsStream(imageName);
                 if (imageStream != null) {
-                    System.out.println("Image found in classpath: " + imageName);
 
                     File tempFile = File.createTempFile("telegram_bot_", "_" + imageName);
                     try (FileOutputStream out = new FileOutputStream(tempFile)) {
@@ -138,7 +165,6 @@ public class PlayCommand implements Command {
 
                     tempFile.deleteOnExit();
                 } else {
-                    System.err.println("Image not found: " + imageName);
                     SendMessage message = createMessage(chatId, caption + "\n\n[Изображение недоступно]");
                     message.setReplyMarkup(keyboardMarkup);
                     bot.execute(message);
@@ -192,13 +218,31 @@ public class PlayCommand implements Command {
 
     private void finishGame(long chatId, TelegramLongPollingBot bot) throws TelegramApiException {
         GameState gameState = userSessionService.getGameState(chatId);
+
+        gameState.setEndTime(System.currentTimeMillis());
+
+        long durationSeconds = gameState.getGameDuration();
+        String timeString = formatTime(durationSeconds);
+
         String result = "🎉 Викторина завершена!\n" +
-                "Ваш результат: " + gameState.getCorrectAnswers() + "/" + gameState.getQuestions().size() + " правильных ответов!\n\n" +
+                "Ваш результат: " + gameState.getCorrectAnswers() + "/" + gameState.getQuestions().size() + " правильных ответов!\n" +
+                "⏱ Время: " + timeString + "\n\n" +
                 "Хотите сыграть ещё раз?\n" +
                 "/play\n" +
                 "Или используйте команду /help чтобы узнать что я умею.";
 
         bot.execute(createMessage(chatId, result));
         userSessionService.removeGameState(chatId);
+    }
+
+    private String formatTime(long totalSeconds) {
+        long minutes = totalSeconds / 60;
+        long seconds = totalSeconds % 60;
+
+        if (minutes > 0) {
+            return String.format("%d мин. %d сек.", minutes, seconds);
+        } else {
+            return String.format("%d сек.", seconds);
+        }
     }
 }
