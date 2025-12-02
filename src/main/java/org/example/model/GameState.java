@@ -7,21 +7,15 @@ public class GameState {
     private int correctAnswers = 0;
     private String selectedCategory;
     private List<QuizQuestion> questions;
+    private long startTime;
+    private long endTime;
 
     public int getCurrentQuestionIndex() {
         return currentQuestionIndex;
     }
 
-    public void setCurrentQuestionIndex(int currentQuestionIndex) {
-        this.currentQuestionIndex = currentQuestionIndex;
-    }
-
     public int getCorrectAnswers() {
         return correctAnswers;
-    }
-
-    public void setCorrectAnswers(int correctAnswers) {
-        this.correctAnswers = correctAnswers;
     }
 
     public String getSelectedCategory() {
@@ -40,11 +34,30 @@ public class GameState {
         this.questions = questions;
     }
 
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
     public void incrementCorrectAnswers() {
         this.correctAnswers++;
     }
 
     public void incrementQuestionIndex() {
         this.currentQuestionIndex++;
+    }
+
+    public long getGameDuration() {
+        if (startTime > 0 && endTime > 0) {
+            return (endTime - startTime) / 1000;
+        }
+        return 0;
     }
 }

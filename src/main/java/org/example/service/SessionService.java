@@ -17,6 +17,8 @@ public class SessionService {
         GameState gameState = new GameState();
         gameState.setSelectedCategory(category);
         gameState.setQuestions(questions);
+        gameState.setStartTime(0);
+        gameState.setEndTime(0);
         userGameStates.put(chatId, gameState);
     }
 

@@ -53,6 +53,9 @@ public class MessageDispatcher {
         if (callbackData.startsWith("category_")) {
             String categoryName = callbackData.substring(9);
             playCommand.processCategorySelection(chatId, categoryName, bot);
+        } else if (callbackData.startsWith("start_game_")) {
+            String categoryName = callbackData.substring(11);
+            playCommand.startGameWithTimer(chatId, categoryName, bot);
         } else if (callbackData.startsWith("answer_")) {
             int answerIndex = Integer.parseInt(callbackData.substring(7));
             playCommand.processAnswer(chatId, answerIndex, bot);
