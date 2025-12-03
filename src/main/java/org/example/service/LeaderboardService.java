@@ -66,7 +66,7 @@ public class LeaderboardService {
 
             for (int i = 0; i < categoryResults.size(); i++) {
                 if (categoryResults.get(i).getChatId() == chatId) {
-                    return i + 1; // Позиция начинается с 1
+                    return i + 1;
                 }
             }
             return -1;
@@ -90,14 +90,4 @@ public class LeaderboardService {
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(LEADERBOARD_FILE), leaderboard);
     }
 
-    public String formatTime(long seconds) {
-        long minutes = seconds / 60;
-        long secs = seconds % 60;
-
-        if (minutes > 0) {
-            return String.format("%d:%02d", minutes, secs);
-        } else {
-            return String.format("%d сек.", secs);
-        }
-    }
 }

@@ -317,35 +317,30 @@ public class PlayCommand implements Command {
         int totalQuestions = gameState.getQuestions().size();
 
         StringBuilder leaderboardText = new StringBuilder();
-        leaderboardText.append("🏆 **Лидерборд - ").append(category).append("**\n\n");
+        leaderboardText.append("🏆 ТОП-10 - ").append(category).append("\n\n");
 
-        if (topResults.isEmpty()) {
-            leaderboardText.append("Пока нет результатов в этой категории.\n");
-            leaderboardText.append("Вы первый! 🎉");
-        } else {
-            for (int i = 0; i < Math.min(topResults.size(), 10); i++) {
-                LeaderboardEntry entry = topResults.get(i);
-                String medal = getMedal(i);
-                String timeFormatted = leaderboardService.formatTime(entry.getTimeSeconds());
+        for (int i = 0; i < Math.min(topResults.size(), 10); i++) {
+            LeaderboardEntry entry = topResults.get(i);
+            String medal = getMedal(i);
+            String timeFormatted = formatTime(entry.getTimeSeconds());
 
-                leaderboardText.append(medal)
-                        .append(" **").append(entry.getCorrectAnswers()).append("/").append(totalQuestions)
-                        .append("** ⏱ ").append(timeFormatted)
-                        .append(" - ").append(entry.getPlayerName())
-                        .append("\n");
-            }
+            leaderboardText.append(medal)
+                    .append(" ").append(entry.getCorrectAnswers()).append("/").append(totalQuestions)
+                    .append(" ⏱ ").append(timeFormatted)
+                    .append(" - ").append(entry.getPlayerName())
+                    .append("\n");
+        }
 
-            leaderboardText.append("\n");
+        leaderboardText.append("\n");
 
-            if (userPosition > 0) {
-                if (userPosition <= 10) {
-                    leaderboardText.append("🎉 Вы в топ-10! Поздравляем!");
-                } else {
-                    leaderboardText.append("📊 Ваша позиция: **").append(userPosition).append("**");
-                }
+        if (userPosition > 0) {
+            if (userPosition <= 10) {
+                leaderboardText.append("🎉 Вы в топ-10! Поздравляем!");
             } else {
-                leaderboardText.append("📊 Ваш результат сохранен!");
+                leaderboardText.append("📊 Ваша позиция: **").append(userPosition).append("**");
             }
+        } else {
+            leaderboardText.append("📊 Ваш результат сохранен!");
         }
 
         return leaderboardText.toString();
