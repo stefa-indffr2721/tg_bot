@@ -5,6 +5,7 @@ import org.example.model.QuizQuestion;
 import org.example.service.QuizService;
 import org.example.service.SessionService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -78,6 +79,15 @@ public class GameManager {
             if (gameState.getCurrentQuestionIndex() >= gameState.getQuestions().size()) {
                 gameFinisher.finishGame(chatId, bot, userSessionService, userNames);
                 return;
+            }
+
+            if (update != null && update.hasCallbackQuery()) {
+                Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
+                EditMessageReplyMarkup editMessage = new EditMessageReplyMarkup();
+                editMessage.setChatId(String.valueOf(chatId));
+                editMessage.setMessageId(messageId);
+                editMessage.setReplyMarkup(null);
+                bot.execute(editMessage);
             }
 
             QuizQuestion currentQuestion = gameState.getQuestions().get(gameState.getCurrentQuestionIndex());
