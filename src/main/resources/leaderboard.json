@@ -1,0 +1,22 @@
+{
+  "Наука" : [ {
+    "playerName" : "Викуся",
+    "chatId" : 1749065948,
+    "correctAnswers" : 2,
+    "timeSeconds" : 15,
+    "category" : "Наука"
+  } ],
+  "География" : [ {
+    "playerName" : "Викуся",
+    "chatId" : 1749065948,
+    "correctAnswers" : 4,
+    "timeSeconds" : 19,
+    "category" : "География"
+  }, {
+    "playerName" : "Викуся",
+    "chatId" : 1749065948,
+    "correctAnswers" : 3,
+    "timeSeconds" : 11,
+    "category" : "География"
+  } ]
+}

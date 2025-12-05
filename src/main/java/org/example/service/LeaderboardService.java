@@ -11,9 +11,11 @@ import java.util.*;
 public class LeaderboardService {
     private static final String LEADERBOARD_FILE = "leaderboard.json";
     private final ObjectMapper objectMapper;
+    private final File leaderboardFile;
 
     public LeaderboardService() {
         this.objectMapper = new ObjectMapper();
+        this.leaderboardFile = new File("src/main/resources/" + LEADERBOARD_FILE);
     }
 
     public void addResult(String playerName, long chatId, int correctAnswers, long timeSeconds, String category) {
@@ -99,15 +101,22 @@ public class LeaderboardService {
     }
 
     private Map<String, List<LeaderboardEntry>> loadLeaderboard() throws IOException {
-        File file = new File(LEADERBOARD_FILE);
-        if (!file.exists()) {
+        if (!leaderboardFile.exists()) {
+            Map<String, List<LeaderboardEntry>> emptyLeaderboard = new HashMap<>();
+            saveLeaderboard(emptyLeaderboard);
+            return emptyLeaderboard;
+        }
+
+
+        if (leaderboardFile.length() == 0) {
             return new HashMap<>();
         }
 
-        return objectMapper.readValue(file, new TypeReference<Map<String, List<LeaderboardEntry>>>() {});
+        return objectMapper.readValue(leaderboardFile, new TypeReference<Map<String, List<LeaderboardEntry>>>() {});
     }
 
     private void saveLeaderboard(Map<String, List<LeaderboardEntry>> leaderboard) throws IOException {
-        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(LEADERBOARD_FILE), leaderboard);
+        leaderboardFile.getParentFile().mkdirs();
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(leaderboardFile, leaderboard);
     }
 }

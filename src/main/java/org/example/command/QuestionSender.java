@@ -51,50 +51,24 @@ public class QuestionSender {
         }
     }
 
-    private void sendPhotoQuestion(long chatId, String caption, String imageName, InlineKeyboardMarkup keyboardMarkup, TelegramLongPollingBot bot)
+    private void sendPhotoQuestion(long chatId, String caption, String imageUrl, InlineKeyboardMarkup keyboardMarkup, TelegramLongPollingBot bot)
             throws TelegramApiException {
         try {
-            String resourcesPath = "src/main/resources/";
-            File imageFile = new File(resourcesPath + imageName);
-
-            if (imageFile.exists()) {
+            if (imageUrl != null) {
                 SendPhoto photoMessage = new SendPhoto();
                 photoMessage.setChatId(String.valueOf(chatId));
-                photoMessage.setPhoto(new InputFile(imageFile, imageName));
+                photoMessage.setPhoto(new InputFile(imageUrl));
                 photoMessage.setCaption(caption);
                 photoMessage.setReplyMarkup(keyboardMarkup);
                 bot.execute(photoMessage);
             } else {
-                InputStream imageStream = getClass().getClassLoader().getResourceAsStream(imageName);
-                if (imageStream != null) {
-
-                    File tempFile = File.createTempFile("telegram_bot_", "_" + imageName);
-                    try (FileOutputStream out = new FileOutputStream(tempFile)) {
-                        byte[] buffer = new byte[1024];
-                        int bytesRead;
-                        while ((bytesRead = imageStream.read(buffer)) != -1) {
-                            out.write(buffer, 0, bytesRead);
-                        }
-                    }
-
-                    SendPhoto photoMessage = new SendPhoto();
-                    photoMessage.setChatId(String.valueOf(chatId));
-                    photoMessage.setPhoto(new InputFile(tempFile, imageName));
-                    photoMessage.setCaption(caption);
-                    photoMessage.setReplyMarkup(keyboardMarkup);
-                    bot.execute(photoMessage);
-
-                    tempFile.deleteOnExit();
-                } else {
-                    SendMessage message = createMessage(chatId, caption + "\n\n[Изображение недоступно]");
-                    message.setReplyMarkup(keyboardMarkup);
-                    bot.execute(message);
-                }
+                SendMessage message = createMessage(chatId, caption);
+                message.setReplyMarkup(keyboardMarkup);
+                bot.execute(message);
             }
         } catch (Exception e) {
-            System.err.println("Error sending photo: " + e.getMessage());
             e.printStackTrace();
-            SendMessage message = createMessage(chatId, caption + "\n\n[Ошибка загрузки изображения]");
+            SendMessage message = createMessage(chatId, caption + "\n\n[Ошибка загрузки изображения по ссылке]");
             message.setReplyMarkup(keyboardMarkup);
             bot.execute(message);
         }

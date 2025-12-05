@@ -163,31 +163,31 @@
     "Породы кошек": [
       {
         "question": "Какая это порода кошки?",
-        "image": "cat1.jpg",
+        "image": "https://cat.mau.ru/bri/main.jpg",
         "options": ["Британская короткошёрстная", "Мейн-кун", "Сфинкс"],
         "correctAnswerIndex": 0
       },
       {
         "question": "Узнайте породу этой кошки",
-        "image": "cat2.jpg",
+        "image": "https://cat.mau.ru/per/main1.jpg",
         "options": ["Сиамская", "Персидская", "Бенгальская"],
         "correctAnswerIndex": 1
       },
       {
         "question": "Как называется эта порода?",
-        "image": "cat3.jpg",
+        "image": "https://cat.mau.ru/ori/main.jpg",
         "options": ["Русская голубая", "Шотландская вислоухая", "Ориентальная"],
         "correctAnswerIndex": 2
       },
       {
         "question": "Определите породу кошки",
-        "image": "cat4.jpg",
+        "image": "https://cat.mau.ru/nfo/01.jpg",
         "options": ["Норвежская лесная", "Сибирская", "Регдолл"],
         "correctAnswerIndex": 0
       },
       {
         "question": "Какая порода изображена на фото?",
-        "image": "cat5.jpg",
+        "image": "https://www.cat.mau.ru/spx/spx26.jpg",
         "options": ["Абиссинская", "Канадский сфинкс", "Бурманская"],
         "correctAnswerIndex": 1
       }
