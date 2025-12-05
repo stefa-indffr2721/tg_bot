@@ -25,12 +25,7 @@ public class LeaderboardService {
             LeaderboardEntry newEntry = new LeaderboardEntry(playerName, chatId, correctAnswers, timeSeconds, category);
             categoryResults.add(newEntry);
 
-            categoryResults.sort((a, b) -> {
-                if (b.getCorrectAnswers() != a.getCorrectAnswers()) {
-                    return Integer.compare(b.getCorrectAnswers(), a.getCorrectAnswers());
-                }
-                return Long.compare(a.getTimeSeconds(), b.getTimeSeconds());
-            });
+            selectionSort(categoryResults);
 
             if (categoryResults.size() > 100) {
                 categoryResults = categoryResults.subList(0, 100);
@@ -41,6 +36,32 @@ public class LeaderboardService {
 
         } catch (IOException e) {
             System.err.println("Ошибка при сохранении результата в лидерборд: " + e.getMessage());
+        }
+    }
+
+    private void selectionSort(List<LeaderboardEntry> list) {
+        for (int i = 0; i < list.size() - 1; i++) {
+            int bestIndex = i;
+
+            for (int j = i + 1; j < list.size(); j++) {
+                LeaderboardEntry current = list.get(j);
+                LeaderboardEntry best = list.get(bestIndex);
+
+                if (current.getCorrectAnswers() > best.getCorrectAnswers()) {
+                    bestIndex = j;
+                }
+                else if (current.getCorrectAnswers() == best.getCorrectAnswers()) {
+                    if (current.getTimeSeconds() < best.getTimeSeconds()) {
+                        bestIndex = j;
+                    }
+                }
+            }
+
+            if (bestIndex != i) {
+                LeaderboardEntry temp = list.get(i);
+                list.set(i, list.get(bestIndex));
+                list.set(bestIndex, temp);
+            }
         }
     }
 
@@ -89,5 +110,4 @@ public class LeaderboardService {
     private void saveLeaderboard(Map<String, List<LeaderboardEntry>> leaderboard) throws IOException {
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(LEADERBOARD_FILE), leaderboard);
     }
-
 }
