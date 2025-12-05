@@ -32,4 +32,3 @@ public class Main {
         }
     }
 }
-//TODO: не хранить фотографии
