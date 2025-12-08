@@ -9,9 +9,15 @@ public class PlayCommand implements Command {
     private final GameManager gameManager;
     private final GameStateContainer gameStateContainer;
 
+    public PlayCommand(GameStateContainer gameStateContainer) {
+        this.gameStateContainer = gameStateContainer;
+        this.categoryService = new CategoryService(gameStateContainer, new DuelService(gameStateContainer));
+        this.gameManager = new GameManager(gameStateContainer);
+    }
+
     public PlayCommand() {
         this.gameStateContainer = new GameStateContainer();
-        this.categoryService = new CategoryService(gameStateContainer);
+        this.categoryService = new CategoryService(gameStateContainer, new DuelService(gameStateContainer));
         this.gameManager = new GameManager(gameStateContainer);
     }
 

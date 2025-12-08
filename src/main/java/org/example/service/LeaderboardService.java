@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.util.*;
 
 public class LeaderboardService {
-    private static final String LEADERBOARD_FILE = "leaderboard.json";
+    private static final String LEADERBOARD_FILE = "src/main/resources/leaderboard.json";
     private final ObjectMapper objectMapper;
     private final File leaderboardFile;
 
     public LeaderboardService() {
         this.objectMapper = new ObjectMapper();
-        this.leaderboardFile = new File("src/main/resources/" + LEADERBOARD_FILE);
+        this.leaderboardFile = new File(LEADERBOARD_FILE);
     }
 
     public void addResult(String playerName, long chatId, int correctAnswers, long timeSeconds, String category) {

@@ -1,9 +1,7 @@
 package org.example.dispatcher;
 
-import org.example.command.Command;
-import org.example.command.HelpCommand;
-import org.example.command.PlayCommand;
-import org.example.command.StartCommand;
+import org.example.command.*;
+import org.example.model.GameState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -15,10 +13,16 @@ import java.util.Map;
 public class MessageDispatcher {
     private final Map<String, Command> commands;
     private final PlayCommand playCommand;
+    private final CategoryService categoryService;
+    private final GameStateContainer gameStateContainer;
+    private final DuelService duelService;
 
     public MessageDispatcher() {
         this.commands = new HashMap<>();
-        this.playCommand = new PlayCommand();
+        this.gameStateContainer = new GameStateContainer();
+        this.playCommand = new PlayCommand(gameStateContainer);
+        this.duelService = new DuelService(gameStateContainer);
+        this.categoryService = new CategoryService(gameStateContainer, duelService);
 
         initializeCommands();
     }
@@ -37,7 +41,10 @@ public class MessageDispatcher {
                 handleMessage(update, bot);
             }
         } catch (Exception e) {
-            System.err.println("[ERR]: " + e.getMessage());
+            if (!e.getMessage().contains("query is too old") &&
+                    !e.getMessage().contains("query ID is invalid")) {
+                System.err.println("[ERR]: " + e.getMessage());
+            }
         }
     }
 
@@ -46,18 +53,36 @@ public class MessageDispatcher {
         long chatId = update.getCallbackQuery().getMessage().getChatId();
         String callbackQueryId = update.getCallbackQuery().getId();
 
-        AnswerCallbackQuery answer = new AnswerCallbackQuery();
-        answer.setCallbackQueryId(callbackQueryId);
-        bot.execute(answer);
+        try {
+            AnswerCallbackQuery answer = new AnswerCallbackQuery();
+            answer.setCallbackQueryId(callbackQueryId);
+            bot.execute(answer);
+        } catch (TelegramApiException e) {
+            if (!e.getMessage().contains("query is too old") &&
+                    !e.getMessage().contains("query ID is invalid")) {
+                throw e;
+            }
+        }
 
         if (callbackData.startsWith("category_")) {
             String categoryName = callbackData.substring(9);
-            playCommand.processCategorySelection(chatId, categoryName, update, bot);
+            categoryService.processCategorySelection(chatId, categoryName, update, bot);
+        } else if (callbackData.startsWith("start_single_") || callbackData.startsWith("start_duel_")) {
+            categoryService.processGameModeSelection(chatId, callbackData, bot);
         } else if (callbackData.startsWith("start_game_")) {
             playCommand.startGameWithTimer(chatId, bot);
         } else if (callbackData.startsWith("answer_")) {
             int answerIndex = Integer.parseInt(callbackData.substring(7));
-            playCommand.processAnswer(chatId, answerIndex, update, bot);
+
+            GameState gameState = gameStateContainer.getSessionService().getGameState(chatId);
+
+            if (gameState != null && gameState.isDuelMode()) {
+                duelService.processDuelAnswer(chatId, answerIndex, bot);
+            } else {
+                playCommand.processAnswer(chatId, answerIndex, update, bot);
+            }
+        } else if (callbackData.equals("cancel_duel")) {
+            duelService.cancelDuel(chatId, bot);
         }
     }
 
