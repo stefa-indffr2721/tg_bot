@@ -14,3 +14,4 @@ org/example/config/Token.java
 /target/classes/org/example/TelegramBot.class
 /target/classes/org/example/Token.class
 /target/
+src/main/resources/leaderboard.json
