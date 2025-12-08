@@ -11,16 +11,12 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class Main {
     public static void main(String[] args) {
         try {
-            // Создаем конфигурацию бота
             BotConfig botConfig = new BotConfig(Token.BOT_TOKEN, Token.BOT_USERNAME);
 
-            // Создаем диспетчер сообщений
             MessageDispatcher messageDispatcher = new MessageDispatcher();
 
-            // Создаем контроллер бота
             TelegramBotController bot = new TelegramBotController(botConfig, messageDispatcher);
 
-            // Регистрируем бота
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(bot);
 

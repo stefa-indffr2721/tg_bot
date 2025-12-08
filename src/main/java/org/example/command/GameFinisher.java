@@ -110,7 +110,7 @@ public class GameFinisher {
         };
     }
 
-    private String formatTime(long totalSeconds) {
+    public String formatTime(long totalSeconds) {
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
 

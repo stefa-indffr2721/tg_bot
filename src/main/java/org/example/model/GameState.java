@@ -9,6 +9,8 @@ public class GameState {
     private List<QuizQuestion> questions;
     private long startTime;
     private long endTime;
+    private boolean isDuelMode = false;
+    private long opponentChatId = -1;
 
     public int getCurrentQuestionIndex() {
         return currentQuestionIndex;
@@ -59,5 +61,21 @@ public class GameState {
             return (endTime - startTime) / 1000;
         }
         return 0;
+    }
+
+    public boolean isDuelMode() {
+        return isDuelMode;
+    }
+
+    public void setDuelMode(boolean duelMode) {
+        isDuelMode = duelMode;
+    }
+
+    public long getOpponentChatId() {
+        return opponentChatId;
+    }
+
+    public void setOpponentChatId(long opponentChatId) {
+        this.opponentChatId = opponentChatId;
     }
 }

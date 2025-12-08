@@ -37,6 +37,10 @@ public class GameManager {
             return;
         }
 
+        if (gameState.isDuelMode()) {
+            return;
+        }
+
         gameState.setStartTime(System.currentTimeMillis());
 
         bot.execute(createMessage(chatId, "⏱ Таймер запущен! Начинаем викторину!"));
@@ -51,6 +55,10 @@ public class GameManager {
             return;
         }
 
+        if (gameState.isDuelMode()) {
+            return;
+        }
+
         if (gameState.getCurrentQuestionIndex() < gameState.getQuestions().size()) {
             questionSender.sendQuestion(chatId, gameState, bot);
         } else {
@@ -60,6 +68,12 @@ public class GameManager {
 
     public void processAnswer(long chatId, int answerIndex, Update update, TelegramLongPollingBot bot) {
         try {
+            GameState gameState = userSessionService.getGameState(chatId);
+
+            if (gameState != null && gameState.isDuelMode()) {
+                return;
+            }
+
             if (update != null && update.hasCallbackQuery()) {
                 User user = update.getCallbackQuery().getFrom();
                 String userName = user.getFirstName();
@@ -68,8 +82,6 @@ public class GameManager {
                 }
                 userNames.put(chatId, userName);
             }
-
-            GameState gameState = userSessionService.getGameState(chatId);
 
             if (gameState == null) {
                 bot.execute(createMessage(chatId, "⚠️ Игра не найдена. Начните новую игру с помощью /play"));
