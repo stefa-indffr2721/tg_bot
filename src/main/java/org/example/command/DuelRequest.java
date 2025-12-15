@@ -1,6 +1,6 @@
 package org.example.command;
 
-class DuelRequest {
+public class DuelRequest {
     private final long playerChatId;
     private final String category;
 

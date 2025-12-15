@@ -68,7 +68,7 @@ public class CategoryService {
         showGameModeSelection(chatId, categoryName, bot);
     }
 
-    private void showGameModeSelection(long chatId, String categoryName, TelegramLongPollingBot bot) throws TelegramApiException {
+    public void showGameModeSelection(long chatId, String categoryName, TelegramLongPollingBot bot) throws TelegramApiException {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
@@ -85,6 +85,13 @@ public class CategoryService {
         duelButton.setCallbackData("start_duel_" + categoryName);
         duelRow.add(duelButton);
         rows.add(duelRow);
+
+        List<InlineKeyboardButton> backRow = new ArrayList<>();
+        InlineKeyboardButton backButton = new InlineKeyboardButton();
+        backButton.setText("↩️ Изменить категорию");
+        backButton.setCallbackData("change_category");
+        backRow.add(backButton);
+        rows.add(backRow);
 
         keyboardMarkup.setKeyboard(rows);
 

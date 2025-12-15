@@ -10,6 +10,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.example.util.MessageUtils.createMessage;
+
 public class MessageDispatcher {
     private final Map<String, Command> commands;
     private final PlayCommand playCommand;
@@ -20,9 +22,9 @@ public class MessageDispatcher {
     public MessageDispatcher() {
         this.commands = new HashMap<>();
         this.gameStateContainer = new GameStateContainer();
-        this.playCommand = new PlayCommand(gameStateContainer);
         this.duelService = new DuelService(gameStateContainer);
         this.categoryService = new CategoryService(gameStateContainer, duelService);
+        this.playCommand = new PlayCommand(gameStateContainer);
 
         initializeCommands();
     }
@@ -82,7 +84,18 @@ public class MessageDispatcher {
                 playCommand.processAnswer(chatId, answerIndex, update, bot);
             }
         } else if (callbackData.equals("cancel_duel")) {
-            duelService.cancelDuel(chatId, bot);
+            handleDuelCancel(chatId, bot);
+        } else if (callbackData.equals("change_category")) {
+            categoryService.showCategorySelection(chatId, bot);
+        }
+    }
+
+    private void handleDuelCancel(long chatId, TelegramLongPollingBot bot) throws TelegramApiException {
+        String category = duelService.getPendingDuelCategory(chatId);
+        duelService.cancelDuel(chatId, bot, true);
+
+        if (category != null) {
+            categoryService.showGameModeSelection(chatId, category, bot);
         }
     }
 
@@ -94,7 +107,7 @@ public class MessageDispatcher {
         if (command != null) {
             command.execute(chatId, bot);
         } else {
-            bot.execute(org.example.util.MessageUtils.createMessage(chatId,
+            bot.execute(createMessage(chatId,
                     "❌ Неизвестная команда.\nИспользуйте /help для просмотра доступных команд."));
         }
     }
