@@ -27,7 +27,11 @@ public class GameStateContainer {
         return userNames;
     }
 
-    public Map<Long, DuelRequest> getPendingDuels() { return pendingDuels; }
+    public Map<Long, DuelRequest> getPendingDuels() {
+        return pendingDuels;
+    }
 
-    public Map<String, List<Long>> getDuelQueue() { return duelQueue; }
+    public Map<String, List<Long>> getDuelQueue() {
+        return duelQueue;
+    }
 }

@@ -283,26 +283,38 @@ public class DuelService {
         userNames.remove(player2ChatId);
     }
 
-    public void cancelDuel(long chatId, TelegramLongPollingBot bot) throws TelegramApiException {
+    public String getPendingDuelCategory(long chatId) {
+        DuelRequest duelRequest = pendingDuels.get(chatId);
+        if (duelRequest != null) {
+            return duelRequest.getCategory();
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void cancelDuel(long chatId, TelegramLongPollingBot bot, boolean showCancelMessage) throws TelegramApiException {
         DuelRequest duelRequest = pendingDuels.remove(chatId);
 
         if (duelRequest != null) {
-            List<Long> queue = duelQueue.get(duelRequest.getCategory());
+            String category = duelRequest.getCategory();
+            List<Long> queue = duelQueue.get(category);
 
             if (queue != null) {
                 queue.remove(chatId);
                 if (queue.isEmpty()) {
-                    duelQueue.remove(duelRequest.getCategory());
+                    duelQueue.remove(category);
                 }
             }
 
-            SendMessage message = createMessage(chatId, "❌ Поиск дуэли отменен.");
-            InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-            keyboardMarkup.setKeyboard(new ArrayList<>());
-            message.setReplyMarkup(keyboardMarkup);
-
-            bot.execute(message);
-        } else {
+            if (showCancelMessage) {
+                SendMessage message = createMessage(chatId, "❌ Поиск дуэли отменен.");
+                InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+                keyboardMarkup.setKeyboard(new ArrayList<>());
+                message.setReplyMarkup(keyboardMarkup);
+                bot.execute(message);
+            }
+        } else if (showCancelMessage) {
             bot.execute(createMessage(chatId, "ℹ️ У вас нет активного поиска дуэли."));
         }
     }
