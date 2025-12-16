@@ -35,6 +35,12 @@
     "playerName" : "Викуся",
     "chatId" : 1749065948,
     "correctAnswers" : 3,
+    "timeSeconds" : 18,
+    "category" : "Породы кошек"
+  }, {
+    "playerName" : "Викуся",
+    "chatId" : 1749065948,
+    "correctAnswers" : 3,
     "timeSeconds" : 25,
     "category" : "Породы кошек"
   }, {
