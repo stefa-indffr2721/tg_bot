@@ -2,6 +2,7 @@ package org.example.command;
 
 import org.example.model.GameState;
 import org.example.model.QuizQuestion;
+import org.example.service.QuestionShaker;
 import org.example.service.QuizService;
 import org.example.service.SessionService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -188,8 +189,16 @@ public class DuelService {
                 return;
             }
 
-            QuizQuestion currentQuestion = gameState.getQuestions().get(gameState.getCurrentQuestionIndex());
-            boolean isCorrect = currentQuestion.isCorrectAnswer(answerIndex);
+            QuizQuestion.ShuffledQuestion currentQuestion = gameState.getCurrentShuffledQuestion();
+            boolean isCorrect = false;
+
+            if (currentQuestion != null) {
+                isCorrect = currentQuestion.isCorrectAnswer(answerIndex);
+            } else {
+                QuizQuestion original = gameState.getQuestions().get(gameState.getCurrentQuestionIndex());
+                currentQuestion = QuestionShaker.createShuffled(original);
+                isCorrect = currentQuestion.isCorrectAnswer(answerIndex);
+            }
 
             if (isCorrect) {
                 gameState.incrementCorrectAnswers();

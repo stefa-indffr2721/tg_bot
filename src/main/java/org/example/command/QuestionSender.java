@@ -2,6 +2,7 @@ package org.example.command;
 
 import org.example.model.GameState;
 import org.example.model.QuizQuestion;
+import org.example.service.QuestionShaker;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -10,9 +11,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +19,12 @@ import static org.example.util.MessageUtils.createMessage;
 public class QuestionSender {
 
     public void sendQuestion(long chatId, GameState gameState, TelegramLongPollingBot bot) throws TelegramApiException {
-        QuizQuestion currentQuestion = gameState.getQuestions().get(gameState.getCurrentQuestionIndex());
+        QuizQuestion.ShuffledQuestion currentQuestion = gameState.getCurrentShuffledQuestion();
+
+        if (currentQuestion == null) {
+            QuizQuestion originalQuestion = gameState.getQuestions().get(gameState.getCurrentQuestionIndex());
+            currentQuestion = QuestionShaker.createShuffled(originalQuestion);
+        }
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();

@@ -2,6 +2,7 @@ package org.example.command;
 
 import org.example.model.GameState;
 import org.example.model.QuizQuestion;
+import org.example.service.QuestionShaker;
 import org.example.service.QuizService;
 import org.example.service.SessionService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -102,15 +103,24 @@ public class GameManager {
                 bot.execute(editMessage);
             }
 
-            QuizQuestion currentQuestion = gameState.getQuestions().get(gameState.getCurrentQuestionIndex());
+            QuizQuestion.ShuffledQuestion currentQuestion = gameState.getCurrentShuffledQuestion();
+            boolean isCorrect = false;
+            String correctAnswer = "";
 
-            boolean isCorrect = quizService.validateAnswer(currentQuestion, answerIndex);
+            if (currentQuestion != null) {
+                isCorrect = currentQuestion.isCorrectAnswer(answerIndex);
+                correctAnswer = currentQuestion.getCorrectAnswerText();
+            } else {
+                QuizQuestion originalQuestion = gameState.getQuestions().get(gameState.getCurrentQuestionIndex());
+                currentQuestion = QuestionShaker.createShuffled(originalQuestion); 
+                isCorrect = currentQuestion.isCorrectAnswer(answerIndex);
+                correctAnswer = currentQuestion.getCorrectAnswerText();
+            }
 
             if (isCorrect) {
                 gameState.incrementCorrectAnswers();
                 bot.execute(createMessage(chatId, "✅ Правильно!"));
             } else {
-                String correctAnswer = quizService.getCorrectAnswer(currentQuestion);
                 bot.execute(createMessage(chatId, "❌ Неправильно! Правильный ответ: " + correctAnswer));
             }
 

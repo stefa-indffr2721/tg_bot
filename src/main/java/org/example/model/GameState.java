@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.service.QuestionShaker;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameState {
@@ -7,6 +9,7 @@ public class GameState {
     private int correctAnswers = 0;
     private String selectedCategory;
     private List<QuizQuestion> questions;
+    private List<QuizQuestion.ShuffledQuestion> shuffledQuestions;
     private long startTime;
     private long endTime;
     private boolean isDuelMode = false;
@@ -34,7 +37,23 @@ public class GameState {
 
     public void setQuestions(List<QuizQuestion> questions) {
         this.questions = questions;
+        this.shuffledQuestions = new ArrayList<>();
+        for (QuizQuestion question : questions) {
+            shuffledQuestions.add(QuestionShaker.createShuffled(question));
+        }
     }
+
+    public QuizQuestion.ShuffledQuestion getCurrentShuffledQuestion() {
+        if (currentQuestionIndex < shuffledQuestions.size()) {
+            return shuffledQuestions.get(currentQuestionIndex);
+        }
+        return null;
+    }
+
+    public List<QuizQuestion.ShuffledQuestion> getShuffledQuestions() {
+        return shuffledQuestions;
+    }
+
 
     public void setStartTime(long startTime) {
         this.startTime = startTime;
