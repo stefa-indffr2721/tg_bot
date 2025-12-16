@@ -61,5 +61,12 @@
     "correctAnswers" : 1,
     "timeSeconds" : 22,
     "category" : "Породы кошек"
+  } ],
+  "OpenTrivia" : [ {
+    "playerName" : "Стефа",
+    "chatId" : 1450882168,
+    "correctAnswers" : 3,
+    "timeSeconds" : 24,
+    "category" : "OpenTrivia"
   } ]
 }
