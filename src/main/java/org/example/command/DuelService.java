@@ -234,7 +234,6 @@ public class DuelService {
                     bot.execute(createMessage(chatId, waitingMessage));
                 }
             } else {
-                // Пауза перед следующим вопросом (как в одиночной игре)
                 new Thread(() -> {
                     try {
                         Thread.sleep(1000);

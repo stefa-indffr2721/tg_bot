@@ -11,7 +11,11 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class Main {
     public static void main(String[] args) {
         try {
-            BotConfig botConfig = new BotConfig(Token.BOT_TOKEN, Token.BOT_USERNAME);
+            // Получаем конфигурацию через Token
+            BotConfig botConfig = new BotConfig(
+                    Token.getBotToken(),
+                    Token.getBotUsername()
+            );
 
             MessageDispatcher messageDispatcher = new MessageDispatcher();
 
@@ -21,7 +25,6 @@ public class Main {
             botsApi.registerBot(bot);
 
             System.out.println("Бот успешно запущен!");
-            System.out.println("Имя бота: " + Token.BOT_USERNAME);
 
         } catch (TelegramApiException e) {
             System.err.println("[ERR]: " + e.getMessage());
