@@ -3,8 +3,8 @@
     "География": [
       {
         "question": "Столица Франции?",
-        "options": ["Лондон", "Париж", "Берлин"],
-        "correctAnswerIndex": 1,
+        "options": ["Париж", "Лондон", "Берлин"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
@@ -15,20 +15,20 @@
       },
       {
         "question": "Столица Японии?",
-        "options": ["Пекин", "Сеул", "Токио"],
-        "correctAnswerIndex": 2,
+        "options": ["Токио", "Пекин", "Сеул"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "Самая высокая гора в мире?",
-        "options": ["Килиманджаро", "Эверест", "Монблан"],
-        "correctAnswerIndex": 1,
+        "options": ["Эверест", "Килиманджаро", "Монблан"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "Сколько океанов на Земле?",
-        "options": ["4", "5", "6"],
-        "correctAnswerIndex": 1,
+        "options": ["5", "4", "6"],
+        "correctAnswerIndex": 0,
         "image": null
       }
     ],
@@ -41,14 +41,14 @@
       },
       {
         "question": "Химическая формула воды?",
-        "options": ["CO2", "H2O", "O2"],
-        "correctAnswerIndex": 1,
+        "options": ["H2O", "CO2", "O2"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "Какая планета известна кольцами?",
-        "options": ["Юпитер", "Сатурн", "Уран"],
-        "correctAnswerIndex": 1,
+        "options": ["Сатурн", "Юпитер", "Уран"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
@@ -59,28 +59,28 @@
       },
       {
         "question": "Какой газ растения поглощают из атмосферы?",
-        "options": ["Кислород", "Азот", "Углекислый газ"],
-        "correctAnswerIndex": 2,
+        "options": ["Углекислый газ", "Кислород", "Азот"],
+        "correctAnswerIndex": 0,
         "image": null
       }
     ],
     "Литература": [
       {
         "question": "Кто написал 'Войну и мир'?",
-        "options": ["Достоевский", "Толстой", "Чехов"],
-        "correctAnswerIndex": 1,
+        "options": ["Толстой", "Достоевский", "Чехов"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "Автор 'Гарри Поттера'?",
-        "options": ["Дж. Р. Р. Толкин", "Дж. К. Роулинг", "К. С. Льюис"],
-        "correctAnswerIndex": 1,
+        "options": ["Дж. К. Роулинг", "Дж. Р. Р. Толкин", "К. С. Льюис"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "Кто написал 'Преступление и наказание'?",
-        "options": ["Толстой", "Достоевский", "Гоголь"],
-        "correctAnswerIndex": 1,
+        "options": ["Достоевский", "Толстой", "Гоголь"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
@@ -91,34 +91,34 @@
       },
       {
         "question": "Кто написал 'Евгений Онегин'?",
-        "options": ["Лермонтов", "Пушкин", "Тургенев"],
-        "correctAnswerIndex": 1,
+        "options": ["Пушкин", "Лермонтов", "Тургенев"],
+        "correctAnswerIndex": 0,
         "image": null
       }
     ],
     "Животные": [
       {
         "question": "Самое большое млекопитающее?",
-        "options": ["Слон", "Синий кит", "Жираф"],
-        "correctAnswerIndex": 1,
+        "options": ["Синий кит", "Слон", "Жираф"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "Сколько жизней у кошки?",
-        "options": ["7", "9", "6"],
-        "correctAnswerIndex": 1,
+        "options": ["9", "7", "6"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "Какое животное самое быстрое на суше?",
-        "options": ["Лев", "Гепард", "Антилопа"],
-        "correctAnswerIndex": 1,
+        "options": ["Гепард", "Лев", "Антилопа"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "Сколько глаз у паука?",
-        "options": ["6", "8", "10"],
-        "correctAnswerIndex": 1,
+        "options": ["8", "6", "10"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
@@ -137,59 +137,59 @@
       },
       {
         "question": "Первый человек в космосе?",
-        "options": ["Нил Армстронг", "Юрий Гагарин", "Алан Шепард"],
-        "correctAnswerIndex": 1,
+        "options": ["Юрий Гагарин", "Нил Армстронг", "Алан Шепард"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "Кто был первым президентом США?",
-        "options": ["Томас Джефферсон", "Джордж Вашингтон", "Авраам Линкольн"],
-        "correctAnswerIndex": 1,
+        "options": ["Джордж Вашингтон", "Томас Джефферсон", "Авраам Линкольн"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "В каком году пала Берлинская стена?",
-        "options": ["1987", "1989", "1991"],
-        "correctAnswerIndex": 1,
+        "options": ["1989", "1987", "1991"],
+        "correctAnswerIndex": 0,
         "image": null
       },
       {
         "question": "Древнеримский гладиатор, возглавивший восстание?",
-        "options": ["Юлий Цезарь", "Спартак", "Ганнибал"],
-        "correctAnswerIndex": 1,
+        "options": ["Спартак", "Юлий Цезарь", "Ганнибал"],
+        "correctAnswerIndex": 0,
         "image": null
       }
     ],
     "Породы кошек": [
       {
         "question": "Какая это порода кошки?",
-        "image": "https://cat.mau.ru/bri/main.jpg",
-        "options": ["Британская короткошёрстная", "Мейн-кун", "Сфинкс"],
+        "image": "true",
+        "options": ["Британская короткошерстная кошка", "Мейн-кун", "Сфинкс"],
         "correctAnswerIndex": 0
       },
       {
         "question": "Узнайте породу этой кошки",
-        "image": "https://cat.mau.ru/per/main1.jpg",
-        "options": ["Сиамская", "Персидская", "Бенгальская"],
-        "correctAnswerIndex": 1
+        "image": "true",
+        "options": ["Персидская кошка", "Сиамская кошка", "Бенгальская кошка"],
+        "correctAnswerIndex": 0
       },
       {
         "question": "Как называется эта порода?",
-        "image": "https://cat.mau.ru/ori/main.jpg",
-        "options": ["Русская голубая", "Шотландская вислоухая", "Ориентальная"],
-        "correctAnswerIndex": 2
+        "image": "true",
+        "options": ["Оцикет", "Русская голубая кошка", "Шотландская вислоухая кошка"],
+        "correctAnswerIndex": 0
       },
       {
         "question": "Определите породу кошки",
-        "image": "https://cat.mau.ru/nfo/01.jpg",
-        "options": ["Норвежская лесная", "Сибирская", "Регдолл"],
+        "image": "true",
+        "options": ["Норвежская лесная кошка", "Сибирская кошка", "Регдолл"],
         "correctAnswerIndex": 0
       },
       {
         "question": "Какая порода изображена на фото?",
-        "image": "https://www.cat.mau.ru/spx/spx26.jpg",
-        "options": ["Абиссинская", "Канадский сфинкс", "Бурманская"],
-        "correctAnswerIndex": 1
+        "image": "true",
+        "options": ["Пикси-боб", "Абиссинская кошка", "Бурманская кошка"],
+        "correctAnswerIndex": 0
       }
     ]
   }
