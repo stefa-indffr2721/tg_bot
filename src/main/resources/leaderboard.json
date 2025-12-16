@@ -18,5 +18,48 @@
     "correctAnswers" : 3,
     "timeSeconds" : 11,
     "category" : "География"
+  } ],
+  "Породы кошек" : [ {
+    "playerName" : "Викуся",
+    "chatId" : 1749065948,
+    "correctAnswers" : 5,
+    "timeSeconds" : 23,
+    "category" : "Породы кошек"
+  }, {
+    "playerName" : "Викуся",
+    "chatId" : 1749065948,
+    "correctAnswers" : 5,
+    "timeSeconds" : 24,
+    "category" : "Породы кошек"
+  }, {
+    "playerName" : "Викуся",
+    "chatId" : 1749065948,
+    "correctAnswers" : 3,
+    "timeSeconds" : 18,
+    "category" : "Породы кошек"
+  }, {
+    "playerName" : "Викуся",
+    "chatId" : 1749065948,
+    "correctAnswers" : 3,
+    "timeSeconds" : 25,
+    "category" : "Породы кошек"
+  }, {
+    "playerName" : "Стефа",
+    "chatId" : 1450882168,
+    "correctAnswers" : 3,
+    "timeSeconds" : 47,
+    "category" : "Породы кошек"
+  }, {
+    "playerName" : "Стефа",
+    "chatId" : 1450882168,
+    "correctAnswers" : 1,
+    "timeSeconds" : 20,
+    "category" : "Породы кошек"
+  }, {
+    "playerName" : "Стефа",
+    "chatId" : 1450882168,
+    "correctAnswers" : 1,
+    "timeSeconds" : 22,
+    "category" : "Породы кошек"
   } ]
 }

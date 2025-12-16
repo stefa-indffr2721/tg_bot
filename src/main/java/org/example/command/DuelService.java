@@ -7,6 +7,8 @@ import org.example.service.QuizService;
 import org.example.service.SessionService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -173,12 +175,21 @@ public class DuelService {
         }
     }
 
-    public void processDuelAnswer(long chatId, int answerIndex, TelegramLongPollingBot bot) {
+    public void processDuelAnswer(long chatId, int answerIndex, Update update, TelegramLongPollingBot bot) {
         try {
             GameState gameState = userSessionService.getGameState(chatId);
 
             if (gameState == null || !gameState.isDuelMode()) {
                 return;
+            }
+
+            if (update != null && update.hasCallbackQuery()) {
+                Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
+                EditMessageReplyMarkup editMessage = new EditMessageReplyMarkup();
+                editMessage.setChatId(String.valueOf(chatId));
+                editMessage.setMessageId(messageId);
+                editMessage.setReplyMarkup(null);
+                bot.execute(editMessage);
             }
 
             long opponentChatId = gameState.getOpponentChatId();
@@ -191,17 +202,23 @@ public class DuelService {
 
             QuizQuestion.ShuffledQuestion currentQuestion = gameState.getCurrentShuffledQuestion();
             boolean isCorrect = false;
+            String correctAnswer = "";
 
             if (currentQuestion != null) {
                 isCorrect = currentQuestion.isCorrectAnswer(answerIndex);
+                correctAnswer = currentQuestion.getCorrectAnswerText();
             } else {
                 QuizQuestion original = gameState.getQuestions().get(gameState.getCurrentQuestionIndex());
                 currentQuestion = QuestionShaker.createShuffled(original);
                 isCorrect = currentQuestion.isCorrectAnswer(answerIndex);
+                correctAnswer = currentQuestion.getCorrectAnswerText();
             }
 
             if (isCorrect) {
+                bot.execute(createMessage(chatId, "✅ Правильно!"));
                 gameState.incrementCorrectAnswers();
+            } else {
+                bot.execute(createMessage(chatId, "❌ Неправильно! Правильный ответ: " + correctAnswer));
             }
 
             gameState.incrementQuestionIndex();
@@ -217,8 +234,18 @@ public class DuelService {
                     bot.execute(createMessage(chatId, waitingMessage));
                 }
             } else {
-                QuestionSender questionSender = new QuestionSender();
-                questionSender.sendQuestion(chatId, gameState, bot);
+                // Пауза перед следующим вопросом (как в одиночной игре)
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(1000);
+                        QuestionSender questionSender = new QuestionSender();
+                        questionSender.sendQuestion(chatId, gameState, bot);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    } catch (TelegramApiException e) {
+                        System.err.println("[ERR Duel Next Question]: " + e.getMessage());
+                    }
+                }).start();
             }
 
         } catch (Exception e) {
@@ -327,5 +354,4 @@ public class DuelService {
             bot.execute(createMessage(chatId, "ℹ️ У вас нет активного поиска дуэли."));
         }
     }
-
 }

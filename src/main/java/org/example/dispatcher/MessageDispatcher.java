@@ -79,7 +79,7 @@ public class MessageDispatcher {
             GameState gameState = gameStateContainer.getSessionService().getGameState(chatId);
 
             if (gameState != null && gameState.isDuelMode()) {
-                duelService.processDuelAnswer(chatId, answerIndex, bot);
+                duelService.processDuelAnswer(chatId, answerIndex, update, bot);
             } else {
                 playCommand.processAnswer(chatId, answerIndex, update, bot);
             }
