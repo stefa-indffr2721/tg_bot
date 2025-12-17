@@ -1,5 +1,5 @@
 # официальный образ Java 17
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:24-jdk
 
 # рабочая директория
 WORKDIR /app
